@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfessorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +13,6 @@ use App\Http\Controllers\ProfessorController;
 |
 */
 
-Route::get('/professor', [ProfessorController::class, 'index']);
-Route::post('/professor', [ProfessorController::class, 'store']);
-
-
+Route::get('/', function () {
+    return view('welcome');
+});

@@ -22,6 +22,12 @@ use App\Http\Controllers\TurmaController;
 
 Route::prefix('v1')->group(function () {
 
+    Route::prefix('willian')->group(function () {
+        Route::get('/', function () {
+            return "funfante";
+        });
+    });
+
     Route::prefix('login')->group(function () {
         Route::post('/professor', [ProfessorController::class, 'login']);
         Route::post('/aluno', [AlunoController::class, 'login']);
