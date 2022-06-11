@@ -190,7 +190,7 @@ class AlunoController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "Error.",
-                "error" => "Professor not found",
+                "error" => "Aluno not found",
             ], 401);
         }
         if ($user[0]['usuario'] == $request['usuario']) {

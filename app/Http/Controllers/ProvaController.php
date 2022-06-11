@@ -203,7 +203,13 @@ class ProvaController extends Controller
     {
         $this->removeTentativa($id);
         $prova = ExercicioProva::where('id_prova', '=', $id)->get()->toArray();
-
+        if (count($prova) == 0) {
+            return response()->json([
+                "success" => false,
+                "message" => "Error.",
+                "error" => 'No exercise in this task',
+            ], 400);
+        }
         for ($i = 0; $i < count($prova); $i++) {
             $arr[$i]['prova'] = $prova[$i];
             $exercicio = Exercicio::where('id', '=', $prova[$i]['id_exercicio'])->get()->toArray();
