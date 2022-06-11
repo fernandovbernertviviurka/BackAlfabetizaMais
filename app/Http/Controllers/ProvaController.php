@@ -173,23 +173,21 @@ class ProvaController extends Controller
             for ($i = 0; $i < count($idProva); $i++) {
 
                 $prova = Prova::where('id', '=', $idProva[$i]['id_prova'])
-                        ->whereDate('data_liberacao', '<=', date('Y-m-d'))
-                        ->whereDate('date_encerramento', '<=', date('Y-m-d'))
-                        ->where('quantidade_tentativas', '>', '0')
-                        ->get()
-                        ->toArray();
+                    ->whereDate('data_liberacao', '<=', date('Y-m-d'))
+                    ->whereDate('date_encerramento', '<=', date('Y-m-d'))
+                    ->where('quantidade_tentativas', '>', '0')
+                    ->get()
+                    ->toArray();
                 if (sizeof($prova) != 0) {
-                    foreach($prova as $pr){
+                    foreach ($prova as $pr) {
                         $arr[] = [
                             'prova' => $pr
                         ];
                     }
                 }
-
             }
 
             return response()->json($arr);
-
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
@@ -201,6 +199,7 @@ class ProvaController extends Controller
 
     public function getExerciciosPorProva($id)
     {
+        $valor_prova = 0;
         $this->removeTentativa($id);
         $prova = ExercicioProva::where('id_prova', '=', $id)->get()->toArray();
         if (count($prova) == 0) {
@@ -212,6 +211,7 @@ class ProvaController extends Controller
         }
         for ($i = 0; $i < count($prova); $i++) {
             $arr[$i]['prova'] = $prova[$i];
+            $valor_prova = $prova[$i]['valor_exercicio'] + $valor_prova;
             $exercicio = Exercicio::where('id', '=', $prova[$i]['id_exercicio'])->get()->toArray();
             $arr[$i]['prova']['exercicio'] = $exercicio[0];
             if ($exercicio[0]['tipo_exercicio'] == 6) {
@@ -220,16 +220,19 @@ class ProvaController extends Controller
                     $exerTipoSeis[$j] = $exercicioSeisImagem[$j];
                 }
                 $arr[$i]['prova']['exercicio']['exercicioTipoSeis'] = (object) $exerTipoSeis;
-                
             }
         }
+        $this->setNewValorToProva($valor_prova, $id);
         return response()->json($arr);
     }
 
-    public function removeTentativa($id){
-
+    public function removeTentativa($id)
+    {
         return Prova::where('id', '=', $id)->decrement('quantidade_tentativas', 1);
+    }
 
-
+    public function setNewValorToProva($valor_prova, $id)
+    {
+        return Prova::where('id', $id)->update(['valor_prova' => $valor_prova]);
     }
 }

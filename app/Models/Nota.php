@@ -20,6 +20,8 @@ class Nota extends Model
      */
     protected $fillable = [
         'nota',
+        'exercisethree',
+        'valor_prova'
     ];
 
 }

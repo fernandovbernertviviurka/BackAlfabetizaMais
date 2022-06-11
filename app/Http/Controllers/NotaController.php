@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNotaRequest;
 use App\Http\Requests\UpdateNotaRequest;
 use App\Models\Nota;
+use Illuminate\Support\Facades\DB;
 
 class NotaController extends Controller
 {
@@ -47,6 +48,7 @@ class NotaController extends Controller
             $nota->id_prova = $request['id_prova'];
             $nota->nota = $request['nota'];
             $nota->data_finalizacao = date('Y-m-d');
+            $nota->exercisethree = $request['exercisethree'];
             $nota->save();
 
 
@@ -108,5 +110,46 @@ class NotaController extends Controller
     public function destroy(Nota $nota)
     {
         //
+    }
+
+    public function getNotaPorAluno($id)
+    {
+
+        try {
+
+            $data = Nota::join("prova", function ($join) {
+                $join->on("prova.id", "=", "nota.id_prova");
+            })
+                ->where('prova.valor_prova', '>=', 0)
+                ->get([
+                    'nota.nota',
+                    'nota.data_finalizacao',
+                    'prova.titulo',
+                    'prova.media',
+                    'prova.valor_prova'
+                ]);
+
+            foreach ($data as $resp) {
+                $valor_aprovacao = $resp->valor_prova * $resp->media / 10;
+                $resultado = "Abaixo da media";
+                if ($resp->nota > $valor_aprovacao && $resp->nota != $resp->valor_prova) {
+                    $resultado = "Acima da media";
+                } elseif ($resp->nota == $valor_aprovacao) {
+                    $resultado = "Na media";
+                }
+
+                $resp->resultado = $resultado;
+            }
+
+
+            return response()->json($data, 200);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                "success" => true,
+                "message" => "Nota dont added.",
+                "data" => $th
+            ], 400);
+        }
     }
 }

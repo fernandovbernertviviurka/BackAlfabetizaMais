@@ -65,6 +65,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('nota')->group(function () {
         Route::get('/', [NotaController::class, 'index']);
         Route::post('/', [NotaController::class, 'store']);
+        Route::get('/notaaluno/{id}', [NotaController::class, 'getNotaPorAluno']);
+
     });
 
     Route::prefix('prova')->group(function () {
