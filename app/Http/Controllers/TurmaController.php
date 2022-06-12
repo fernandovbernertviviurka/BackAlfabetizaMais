@@ -172,4 +172,11 @@ class TurmaController extends Controller
         }
         
     }
+
+    public function getTurmaByProfessor($id){
+
+        $turma = Turma::where('id_professor', '=', $id)->get();
+        dd($turma);
+
+    }
 }

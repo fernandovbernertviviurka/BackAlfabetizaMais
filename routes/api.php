@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExercicioController;
 use App\Http\Controllers\NotaController;
 use Illuminate\Http\Request;
@@ -39,6 +40,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', [ProfessorController::class, 'edit']);
         Route::delete('/{id}', [ProfessorController::class, 'destroy']);
         Route::put('/{id}', [ProfessorController::class, 'update']);
+
+
     });
 
     Route::prefix('turma')->group(function () {
@@ -47,6 +50,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/{id}', [TurmaController::class, 'edit']);
         Route::delete('/{id}', [TurmaController::class, 'destroy']);
         Route::put('/{id}', [TurmaController::class, 'update']);
+
+        Route::get('/turmaporprofessor/{id}', [TurmaController::class, 'getTurmaByProfessor']);
+
     });
 
     Route::prefix('aluno')->group(function () {
@@ -66,6 +72,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/', [NotaController::class, 'index']);
         Route::post('/', [NotaController::class, 'store']);
         Route::get('/notaaluno/{id}', [NotaController::class, 'getNotaPorAluno']);
+
+    });
+
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/{id}', [DashboardController::class, 'index']);
 
     });
 

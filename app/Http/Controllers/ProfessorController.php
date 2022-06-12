@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProfessorRequest;
 use App\Http\Requests\UpdateProfessorRequest;
 use App\Models\Professor;
+use App\Models\Turma;
 
 class ProfessorController extends Controller
 {
