@@ -170,11 +170,20 @@ class ProvaController extends Controller
         try {
 
             $idProva = collect(TurmaHasProva::where('id_turma', '=', $turma_id)->get());
+            if (count($idProva) == 0) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "Error.",
+                    "error" => 'No task available',
+                ], 400);
+            }
+
+
             for ($i = 0; $i < count($idProva); $i++) {
 
                 $prova = Prova::where('id', '=', $idProva[$i]['id_prova'])
                     ->whereDate('data_liberacao', '<=', date('Y-m-d'))
-                    ->whereDate('date_encerramento', '<=', date('Y-m-d'))
+                    ->whereDate('date_encerramento', '>=', date('Y-m-d'))
                     ->where('quantidade_tentativas', '>', '0')
                     ->get()
                     ->toArray();
