@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDashboardRequest;
 use App\Http\Requests\UpdateDashboardRequest;
 use App\Models\Aluno;
+use App\Models\Exercicio;
 use App\Models\Turma;
 use App\Models\TurmaHasProva;
 use App\Models\Nota;
@@ -27,6 +28,19 @@ class DashboardController extends Controller
                 "data" => $data
             ], 200);
     }
+
+    public function exerciciosCriados()
+    {
+        $data = Exercicio::all()
+            ->count();
+
+            return response()->json([
+                "success" => true,
+                "message" => "Total Exercicios",
+                "data" => $data
+            ], 200);
+    }
+
 
     public function provasCriadasPorProfessor($id)
     {
@@ -69,12 +83,22 @@ class DashboardController extends Controller
             ->join("turma_has_prova", function ($join) {
                 $join->on("turma_has_prova.id_prova", "=", "nota.id_prova");
             })
+            ->join("prova", function ($join) {
+                $join->on("turma_has_prova.id_prova", "=", "prova.id");
+            })
             ->join("turma", function ($join) {
                 $join->on("turma.id", "=", "turma_has_prova.id_turma");
             })
                 ->where('turma.id_professor', '=', $id)
                 ->orderByDesc('nota','data_finalizacao')
-                ->take(5)->get();
+                ->take(5)->get([
+                    'aluno.nome as nomeAluno',
+                    'nota.nota as NotaProva',
+                    'prova.valor_prova',
+                    'turma.nome as nomeTurma',  
+                    'prova.titulo as provaNome',
+                    'nota.data_finalizacao as dataConclusao'
+                ]);
 
            return response()->json([
                "success" => true,
@@ -82,4 +106,5 @@ class DashboardController extends Controller
                "data" => $data
            ], 200);
     }
+
 }
