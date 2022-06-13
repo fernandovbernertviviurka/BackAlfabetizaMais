@@ -77,8 +77,10 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('dashboard')->group(function () {
-        Route::get('/{id}', [DashboardController::class, 'index']);
-
+        Route::get('/alunosProfessor/{id}', [DashboardController::class, 'alunosProfessor']);
+        Route::get('/provasCriadasPorProfessor/{id}', [DashboardController::class, 'provasCriadasPorProfessor']);
+        Route::get('/provasCriadasPorProfessorRespondidas/{id}', [DashboardController::class, 'provasCriadasPorProfessorRespondidas']);
+        Route::get('/melhoresAlunos/{id}', [DashboardController::class, 'melhoresAlunos']);
     });
 
     Route::prefix('prova')->group(function () {
