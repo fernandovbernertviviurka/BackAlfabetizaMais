@@ -308,6 +308,6 @@ class ExercicioController extends Controller
         $imageName = time() . '.' . $getImage->extension();
         $imagePath = public_path() . '/images/exercicios/enunciados';
         $getImage->move($imagePath, $imageName);
-        return $imageName;
+        return 'https://salty-island-76150.herokuapp.com/images/exercicios/enunciados/'.$imageName;
     }
 }
