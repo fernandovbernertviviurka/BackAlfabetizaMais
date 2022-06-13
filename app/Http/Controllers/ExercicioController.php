@@ -6,6 +6,7 @@ use App\Http\Requests\StoreExercicioRequest;
 use App\Http\Requests\UpdateExercicioRequest;
 use App\Models\Exercicio;
 use App\Models\ExercicioTipoSeis;
+use App\Models\ExercicioProva;
 
 class ExercicioController extends Controller
 {
@@ -42,10 +43,10 @@ class ExercicioController extends Controller
     public function store(StoreExercicioRequest $request)
     {
         try {
-            
+
             $exercicio = $this->switchFieldsAsExerciseType($request);
             if ($exercicio->tipo_exercicio == 6) {
-                $exercicioTipoSeis = ExercicioTipoSeis::where('id_exercicio','=', $exercicio->id)->get();
+                $exercicioTipoSeis = ExercicioTipoSeis::where('id_exercicio', '=', $exercicio->id)->get();
                 $fullExercicio = [
                     'exercicio' => $exercicio,
                     'exercicioseis' => $exercicioTipoSeis
@@ -55,14 +56,13 @@ class ExercicioController extends Controller
                     "message" => "Exercise create.",
                     "data" => $fullExercicio
                 ], 200);
-            }else{
+            } else {
                 return response()->json([
                     "success" => true,
                     "message" => "Exercise create.",
                     "data" => $exercicio
                 ], 200);
             }
-            
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
@@ -101,9 +101,9 @@ class ExercicioController extends Controller
      * @param  \App\Models\Exercicio  $exercicio
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateExercicioRequest $request, Exercicio $exercicio)
+    public function update(UpdateExercicioRequest $request, Exercicio $exercicio, $id)
     {
-        //
+       
     }
 
     /**
@@ -112,9 +112,45 @@ class ExercicioController extends Controller
      * @param  \App\Models\Exercicio  $exercicio
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Exercicio $exercicio)
+    public function destroy($id)
     {
-        //
+        try {
+            $exercicio = Exercicio::findOrFail($id);
+
+            if ($exercicio['tipo_exercicio'] == 6) {
+                $exercicioTipoSeis = ExercicioTipoSeis::where('id_exercicio', '=', $exercicio['id'])->get();
+
+                if (count($exercicioTipoSeis) > 0) {
+
+                    for ($i = 0; $i < count($exercicioTipoSeis); $i++) {
+
+                        $exercicioSeis = ExercicioTipoSeis::findOrFail($exercicioTipoSeis[$i]['id']);
+                        $exercicioSeis->delete();
+                    }
+                }
+            }
+            $exercicioProva = ExercicioProva::where('id_exercicio', '=', $exercicio['id'])->get();
+            if (count($exercicioProva) > 0) {
+                for ($i = 0; $i < count($exercicioProva); $i++) {
+                    $exercicioProva = ExercicioProva::findOrFail($exercicio['id']);
+                    dd($exercicioProva);
+                    $exercicioProva->delete();
+                }
+            }
+            $exercicio->delete();
+
+
+            return response()->json([
+                "success" => true,
+                "message" => "Exercicio deleted successfully."
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Error.",
+                "error" => $th,
+            ], 400);
+        }
     }
 
     public function switchFieldsAsExerciseType($request)
@@ -254,7 +290,7 @@ class ExercicioController extends Controller
             $exercicio->texto_auxiliar = $request['texto_auxiliar'];
         }
         $exercicio->save();
-        for ($i=0; $i < count($request['exercicioTipoSeis']); $i++) { 
+        for ($i = 0; $i < count($request['exercicioTipoSeis']); $i++) {
             $exercicioTypeSix = new ExercicioTipoSeis;
             $exercicioTypeSix->id_exercicio = $exercicio->id;
             $exercicioTypeSix->imagem = $request['exercicioTipoSeis'][$i]['imagem'];
@@ -265,13 +301,13 @@ class ExercicioController extends Controller
         return $exercicio;
     }
 
-    public function saveImagem($request){
+    public function saveImagem($request)
+    {
         $file = $request->file('imagem_enunciado')->store('public/documents');
         $getImage = $request->file('imagem_enunciado');
-        $imageName = time().'.'.$getImage->extension();
-        $imagePath = public_path(). '/images/exercicios/enunciados';
+        $imageName = time() . '.' . $getImage->extension();
+        $imagePath = public_path() . '/images/exercicios/enunciados';
         $getImage->move($imagePath, $imageName);
         return $imageName;
-
     }
-}   
+}

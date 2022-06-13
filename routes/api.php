@@ -66,6 +66,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('exercicio')->group(function () {
         Route::get('/', [ExercicioController::class, 'index']);
         Route::post('/', [ExercicioController::class, 'store']);
+        Route::delete('/{id}', [ExercicioController::class, 'destroy']);
     });
 
     Route::prefix('nota')->group(function () {

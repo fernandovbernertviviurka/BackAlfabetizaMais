@@ -122,13 +122,14 @@ class TurmaController extends Controller
      * @param  \App\Models\Turma  $turma
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTurmaRequest $request, Turma $turma)
+    public function update(UpdateTurmaRequest $request, Turma $turma, $id)
     {
         try {
-            $turma->update(
+            $turma->where('id', $id)
+                ->update(
                 [
                     'nome' => $request['nome'],
-                    'quantidade_alunos' => $request['emaquantidade_alunosil'],
+                    'quantidade_alunos' => $request['quantidade_alunos'],
                     'id_professor' => $request['id_professor'],
     
                 ]);
@@ -176,7 +177,6 @@ class TurmaController extends Controller
     public function getTurmaByProfessor($id){
 
         $turma = Turma::where('id_professor', '=', $id)->get();
-        dd($turma);
-
+return $turma;
     }
 }

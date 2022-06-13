@@ -56,6 +56,7 @@ class AlunoController extends Controller
             $aluno->nome = $request['nome'];
             $aluno->usuario = $request['usuario'];
             $aluno->senha = $request['senha'];
+            $aluno->idade = $request['idade'];
             $aluno->nome_completo_responsavel = $request['nome_completo_responsavel'];
             $aluno->email_responsavel = $request['email_responsavel'];
             $aluno->save();
@@ -115,27 +116,23 @@ class AlunoController extends Controller
      * @param  \App\Models\Aluno  $aluno
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateAlunoRequest $request, Aluno $aluno)
+    public function update(UpdateAlunoRequest $request, Aluno $aluno, $id)
     {
         try {
-            if (Aluno::where('usuario', '=', $request['usuario'])->exists()) {
-                return response()->json([
-                    "success" => false,
-                    "message" => "Usuario already exist.",
-                ], 400);
-            }
 
-            $aluno->update(
-                [
-                    'nome' => $request['nome'],
-                    'usuario' => $request['emaquantidade_alunosil'],
-                    'senha' => $request['senha'],
-                    'idade' => $request['idade'],
-                    'nome_completo_responsavel' => $request['nome_completo_responsavel'],
-                    'email_responsavel' => $request['email_responsavel'],
-                ]
-            );
+            $alunoNome = Aluno::where("id", "=", $id)->get('usuario');
 
+            $aluno->where('id', $id)
+                ->update(
+                    [
+                        'nome' => $request['nome'],
+                        'usuario' => $alunoNome[0]->usuario,
+                        'senha' => $request['senha'],
+                        'idade' => $request['idade'],
+                        'nome_completo_responsavel' => $request['nome_completo_responsavel'],
+                        'email_responsavel' => $request['email_responsavel'],
+                    ]
+                );
             return response()->json([
                 "success" => true,
                 "message" => "Aluno updated successfully.",
@@ -174,7 +171,8 @@ class AlunoController extends Controller
         }
     }
 
-    public function login(UpdateAlunoRequest $request){
+    public function login(UpdateAlunoRequest $request)
+    {
         if (!$request['usuario'] || !$request['senha']) {
             return response()->json([
                 "success" => false,
@@ -185,7 +183,7 @@ class AlunoController extends Controller
 
         $countUser  = Aluno::where('usuario', '=', $request['usuario'])->count();
         $user = Aluno::where('usuario', '=', $request['usuario'])->get();
-        
+
         if ($countUser == 0) {
             return response()->json([
                 "success" => false,
@@ -206,7 +204,7 @@ class AlunoController extends Controller
                 "message" => "Auth made with success.",
                 "user" => $user
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 "success" => false,
                 "message" => "Error.",
