@@ -103,7 +103,6 @@ class ExercicioController extends Controller
      */
     public function update(UpdateExercicioRequest $request, Exercicio $exercicio, $id)
     {
-       
     }
 
     /**
@@ -290,13 +289,40 @@ class ExercicioController extends Controller
             $exercicio->texto_auxiliar = $request['texto_auxiliar'];
         }
         $exercicio->save();
-        for ($i = 0; $i < count($request['exercicioTipoSeis']); $i++) {
+
+        if ($request['resposta_imagem_um']) {
             $exercicioTypeSix = new ExercicioTipoSeis;
             $exercicioTypeSix->id_exercicio = $exercicio->id;
-            $exercicioTypeSix->imagem = $request['exercicioTipoSeis'][$i]['imagem'];
-            $exercicioTypeSix->resposta = $request['exercicioTipoSeis'][$i]['resposta'];
+            $exercicioTypeSix->imagem = $this->saveImagemExSeisUm($request);
+            $exercicioTypeSix->resposta = $request['resposta_imagem_um'];
             $exercicioTypeSix->save();
         }
+
+        if ($request['resposta_imagem_dois']) {
+            $exercicioTypeSix = new ExercicioTipoSeis;
+            $exercicioTypeSix->id_exercicio = $exercicio->id;
+            $exercicioTypeSix->imagem = $this->saveImagemExSeisDois($request);
+            $exercicioTypeSix->resposta = $request['resposta_imagem_dois'];
+            $exercicioTypeSix->save();
+        }
+
+        if ($request['resposta_imagem_tres']) {
+            $exercicioTypeSix = new ExercicioTipoSeis;
+            $exercicioTypeSix->id_exercicio = $exercicio->id;
+            $exercicioTypeSix->imagem = $this->saveImagemExSeisTres($request);
+            $exercicioTypeSix->resposta = $request['resposta_imagem_tres'];
+            $exercicioTypeSix->save();
+        }
+
+        if ($request['resposta_imagem_quatro']) {
+            $exercicioTypeSix = new ExercicioTipoSeis;
+            $exercicioTypeSix->id_exercicio = $exercicio->id;
+            $exercicioTypeSix->imagem = $this->saveImagemExSeisQuatro($request);
+            $exercicioTypeSix->resposta = $request['resposta_imagem_quatro'];
+            $exercicioTypeSix->save();
+        }
+
+
 
         return $exercicio;
     }
@@ -308,8 +334,43 @@ class ExercicioController extends Controller
         $imageName = time() . '.' . $getImage->extension();
         $imagePath = public_path() . '/images/exercicios/enunciados';
         $getImage->move($imagePath, $imageName);
-        return 'http://127.0.0.1:8000/images/exercicios/enunciados/'.$imageName;
+        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
     }
 
-    
+    public function saveImagemExSeisUm($request)
+    {
+        $file = $request->file('imageOne')->store('public/documents');
+        $getImage = $request->file('imageOne');
+        $imageName = time() . 'imageOne.' . $getImage->extension();
+        $imagePath = public_path() . '/images/exercicios/enunciados';
+        $getImage->move($imagePath, $imageName);
+        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
+    }
+    public function saveImagemExSeisDois($request)
+    {
+        $file = $request->file('imageTwo')->store('public/documents');
+        $getImage = $request->file('imageTwo');
+        $imageName = time() . 'imageTwo.' . $getImage->extension();
+        $imagePath = public_path() . '/images/exercicios/enunciados';
+        $getImage->move($imagePath, $imageName);
+        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
+    }
+    public function saveImagemExSeisTres($request)
+    {
+        $file = $request->file('imageThree')->store('public/documents');
+        $getImage = $request->file('imageThree');
+        $imageName = time() . 'imageThree.' . $getImage->extension();
+        $imagePath = public_path() . '/images/exercicios/enunciados';
+        $getImage->move($imagePath, $imageName);
+        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
+    }
+    public function saveImagemExSeisQuatro($request)
+    {
+        $file = $request->file('imageFour')->store('public/documents');
+        $getImage = $request->file('imageFour');
+        $imageName = time() . 'imageFour.' . $getImage->extension();
+        $imagePath = public_path() . '/images/exercicios/enunciados';
+        $getImage->move($imagePath, $imageName);
+        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
+    }
 }
