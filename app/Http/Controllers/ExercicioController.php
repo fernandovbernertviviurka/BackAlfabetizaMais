@@ -132,7 +132,6 @@ class ExercicioController extends Controller
             if (count($exercicioProva) > 0) {
                 for ($i = 0; $i < count($exercicioProva); $i++) {
                     $exercicioProva = ExercicioProva::findOrFail($exercicio['id']);
-                    dd($exercicioProva);
                     $exercicioProva->delete();
                 }
             }
@@ -334,7 +333,7 @@ class ExercicioController extends Controller
         $imageName = time() . '.' . $getImage->extension();
         $imagePath = public_path() . '/images/exercicios/enunciados';
         $getImage->move($imagePath, $imageName);
-        return 'http://127.0.0.1:8000/images/exercicios/enunciados/' . $imageName;
+        return 'https://salty-island-76150.herokuapp.com/images/exercicios/enunciados/' . $imageName;
     }
 
     public function saveImagemExSeisUm($request)

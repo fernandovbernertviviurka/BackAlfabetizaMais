@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\ProvaController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\RelatorioController;
+use App\Models\ExercicioProva;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,6 +84,10 @@ Route::prefix('v1')->group(function () {
 
     Route::prefix('relatorio')->group(function () {
         Route::post('/', [RelatorioController::class, 'geraRelatorio']);
+    });
+
+    Route::prefix('exercicioprova')->group(function () {
+        Route::post('/', [ExercicioProva::class, 'store']);
     });
 
     Route::prefix('prova')->group(function () {

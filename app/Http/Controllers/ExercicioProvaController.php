@@ -36,7 +36,28 @@ class ExercicioProvaController extends Controller
      */
     public function store(StoreExercicioProvaRequest $request)
     {
-        //
+        try {
+            $exercicioProva = new ExercicioProva();
+            $exercicioProva->id_prova = $request['id_prova'];
+            $exercicioProva->id_exercicio = $request['id_exercicio'];
+            $exercicioProva->ordem = $request['ordem'];
+            $exercicioProva->valor_exercicio = $request['valor_exercicio'];
+            $exercicioProva->save();
+
+
+            return response()->json([
+                "success" => true,
+                "message" => "Exercicio Prova created successfully.",
+                "data" => $exercicioProva
+            ], 200);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                "success" => true,
+                "message" => "Prova dont created.",
+                "data" => $th
+            ], 400);
+        }
     }
 
     /**

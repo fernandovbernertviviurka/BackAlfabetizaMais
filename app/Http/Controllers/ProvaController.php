@@ -148,9 +148,16 @@ class ProvaController extends Controller
      * @param  \App\Models\Prova  $prova
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Prova $prova)
+    public function destroy($id)
     {
         try {
+            $prova = Prova::findOrFail($id);
+            $turmaProva = TurmaHasProva::where('id_prova', '=', $prova['id'])->get();
+
+            for ($i=0; $i < count($turmaProva); $i++) { 
+                $turma = TurmaHasProva::where('id_prova','=',$turmaProva[$i]['id_prova'])->get();
+                $turma->delete();
+            }
             $prova->delete();
             return response()->json([
                 "success" => true,
@@ -244,4 +251,5 @@ class ProvaController extends Controller
     {
         return Prova::where('id', $id)->update(['valor_prova' => $valor_prova]);
     }
+    
 }
