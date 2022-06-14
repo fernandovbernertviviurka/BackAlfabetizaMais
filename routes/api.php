@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\ProvaController;
 use App\Http\Controllers\TurmaController;
+use App\Http\Controllers\RelatorioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/provasCriadasPorProfessor/{id}', [DashboardController::class, 'provasCriadasPorProfessor']);
         Route::get('/provasCriadasPorProfessorRespondidas/{id}', [DashboardController::class, 'provasCriadasPorProfessorRespondidas']);
         Route::get('/melhoresAlunos/{id}', [DashboardController::class, 'melhoresAlunos']);
+    });
+
+    Route::prefix('relatorio')->group(function () {
+        Route::post('/', [RelatorioController::class, 'geraRelatorio']);
     });
 
     Route::prefix('prova')->group(function () {
